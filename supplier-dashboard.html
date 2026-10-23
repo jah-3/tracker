@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Dashboard | Salamence Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <style>
+        #supplier-map { height: 340px; width: 100%; border-radius: 10px; }
+        .supplier-message { min-height: 24px; margin-top: 12px; color: #475569; }
+    </style>
+</head>
+<body class="portal-layout">
+    <header class="main-navigation">
+        <a href="supplier-dashboard.html" class="brand-name">Salamence Tracker | Supplier</a>
+        <nav class="top-nav-links">
+            <span id="supplier-account-email"></span>
+            <a href="driver.html" data-portal-switch>Driver Portal</a>
+            <button type="button" id="supplier-logout">Sign Out</button>
+        </nav>
+    </header>
+
+    <main class="main-content" style="margin-left:0;width:100%;max-width:1100px;margin-right:auto;">
+        <div id="supplier-app">
+            <header class="topbar">
+                <div><h1>Supplier Portal</h1><p>Track deliveries and submit product requests.</p></div>
+            </header>
+
+            <section class="content-card">
+                <h2>Register an Incoming Package</h2>
+                <p>Submit the tracking and delivery details. The administrator assigns a vehicle for live tracking.</p>
+                <form id="incoming-shipment-form" class="shipment-form">
+                    <label for="incoming-tracking">Tracking number
+                        <input id="incoming-tracking" maxlength="80" required>
+                    </label>
+                    <label for="incoming-item">Item / package contents
+                        <input id="incoming-item" maxlength="200" required>
+                    </label>
+                    <label for="incoming-quantity">Quantity
+                        <input id="incoming-quantity" type="number" min="1" step="1" value="1" required>
+                    </label>
+                    <label for="incoming-destination">Delivery address
+                        <input id="incoming-destination" maxlength="200" required>
+                    </label>
+                    <button type="submit" id="incoming-submit">Register Package</button>
+                </form>
+                <p id="incoming-message" class="supplier-message" role="status" aria-live="polite"></p>
+            </section>
+
+            <section class="content-card">
+                <h2>My Packages</h2>
+                <p>See delivery progress and your assigned truck. The road line connects its latest shared GPS location to active package destinations; route estimates are not live traffic.</p>
+                <div id="supplier-map"></div>
+                <p id="shipment-message" class="supplier-message" role="status" aria-live="polite">Refreshing vehicle locations every 30 seconds.</p>
+                <div class="table-container">
+                    <table>
+                        <thead><tr>
+                            <th>Tracking Number</th><th>Contents</th><th>Qty</th>
+                            <th>Status</th><th>Vehicle</th><th>Current Location</th>
+                            <th>Estimated Delivery</th>
+                        </tr></thead>
+                        <tbody id="supplier-shipments"><tr><td colspan="7">Loading packages...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="content-card">
+                <h2>Request Products</h2>
+                <p>Choose a product and quantity. Your request will be sent to the administrator for review.</p>
+                <form id="supplier-order-form" class="shipment-form">
+                    <label for="order-product">Product
+                        <select id="order-product" required><option value="">Loading products...</option></select>
+                    </label>
+                    <label for="order-quantity">Quantity
+                        <input id="order-quantity" type="number" min="1" step="1" value="1" required>
+                    </label>
+                    <label for="order-notes">Notes
+                        <input id="order-notes" maxlength="500" placeholder="Optional details">
+                    </label>
+                    <button type="submit" id="order-submit">Submit Product Request</button>
+                </form>
+                <p id="order-message" class="supplier-message" role="status" aria-live="polite"></p>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Requested</th><th>Product</th><th>Quantity</th><th>Notes</th><th>Status</th></tr></thead>
+                        <tbody id="supplier-orders"><tr><td colspan="5">Loading requests...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="portal-switch.js"></script>
+    <script src="route-map.js"></script>
+    <script src="supplier-dashboard.js"></script>
+</body>
+</html>

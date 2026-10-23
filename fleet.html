@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Salamence Tracker | Fleet Tracking</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- LEAFLET MAP CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <style>
+        #fleet-map {
+            height: 400px;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .map-status {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+
+    <!-- LOGIN SESSION CHECK -->
+    <script>
+        if (sessionStorage.getItem("isLoggedIn") !== "true") {
+            window.location.replace("login.html");
+        }
+    </script>
+</head>
+
+<body>
+
+    <header class="main-navigation">
+        <a href="index.html" class="brand-name">
+            Salamence Tracker
+        </a>
+
+        <nav class="top-nav-links">
+            <a href="about.html" class="top-nav-link">About</a>
+            <a href="#" class="top-nav-link" id="logout-button">Logout</a>
+        </nav>
+    </header>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>Salamence Tracker</h2>
+            <p>Supply Chain System</p>
+        </div>
+
+        <nav>
+            <a href="index.html" class="nav-link">
+                <span class="nav-icon">🏠</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="warehouse.html" class="nav-link">
+                <span class="nav-icon">🏭</span>
+                <span>Warehouse</span>
+            </a>
+
+            <a href="inventory.html" class="nav-link">
+                <span class="nav-icon">📦</span>
+                <span>Inventory Stocks</span>
+            </a>
+
+            <a href="fleet.html" class="nav-link active">
+                <span class="nav-icon">🚚</span>
+                <span>Fleet Tracking</span>
+            </a>
+
+            <a href="suppliers.html" class="nav-link">
+                <span class="nav-icon">🛒</span>
+                <span>Supplier Orders</span>
+            </a>
+
+            <a href="ai-assistant.html" class="nav-link">
+                <span class="nav-icon">🤖</span>
+                <span>AI Assistant</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>Salamence Tracker</p>
+            <p>Version 1.0</p>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>Fleet Tracking</h1>
+                <p>Monitor vehicles and delivery status.</p>
+            </div>
+
+            <div class="user-info">
+                <span>Administrator</span>
+            </div>
+        </header>
+
+        <!-- DASHBOARD CARDS -->
+        <section class="dashboard-cards">
+
+            <article class="stat-card">
+                <div class="stat-icon">🚚</div>
+                <div>
+                    <p>Total Vehicles</p>
+                    <h2 id="total-vehicles">0</h2>
+                    <span>Registered vehicles</span>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">🛣️</div>
+                <div>
+                    <p>On Delivery</p>
+                    <h2 id="active-vehicles">0</h2>
+                    <span>Vehicles currently delivering</span>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">🅿️</div>
+                <div>
+                    <p>Available Vehicles</p>
+                    <h2 id="available-vehicles">0</h2>
+                    <span>Vehicles ready for delivery</span>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">🔧</div>
+                <div>
+                    <p>Under Maintenance</p>
+                    <h2 id="maintenance-vehicles">0</h2>
+                    <span>Vehicles being serviced</span>
+                </div>
+            </article>
+
+        </section>
+
+
+        <section class="content-card">
+            <div class="section-header">
+                <div>
+                    <h2>Live Vehicle Map</h2>
+                    <p>Live trucks and active package stops are connected with road-route lines. Driver GPS, delivery progress, and arrival estimates sync here automatically. Routes use road-network estimates, not live traffic; drivers must keep their dashboard open and share GPS.</p>
+                </div>
+            </div>
+
+            <div id="fleet-map"></div>
+
+            <p id="gps-status" class="map-status">
+                Loading map and vehicle locations...
+            </p>
+        </section>
+
+        <section class="content-card">
+            <div class="section-header">
+                <div>
+                    <h2>Vehicle Records</h2>
+                    <p>Items, quantities, delivery estimates, and current locations come from assigned packages and live driver GPS.</p>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vehicle ID</th>
+                            <th>Plate Number</th>
+                            <th>Driver</th>
+                            <th>Driver Account</th>
+                            <th>Packages and Quantities</th>
+                            <th>Estimated Deliveries</th>
+                            <th>Current GPS Location</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="fleet-table">
+                        <tr>
+                            <td colspan="9">Loading vehicles...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="content-card">
+            <div class="section-header">
+                <div>
+                    <h2>Driver Delay and Vehicle Reports</h2>
+                    <p>Reports submitted by drivers appear here automatically.</p>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reported</th>
+                            <th>Driver</th>
+                            <th>Vehicle</th>
+                            <th>Delivery</th>
+                            <th>Type</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="driver-reports">
+                        <tr><td colspan="6">Loading driver reports...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer>
+            <p>
+                &copy; 2026 Salamence Tracker |
+                Logistics &amp; Supply Chain System
+            </p>
+        </footer>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="admin-guard.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="route-map.js"></script>
+    <script src="fleet.js"></script>
+
+</body>
+</html>

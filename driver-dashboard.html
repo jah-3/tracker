@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard | Salamence Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <style>
+        #driver-map {
+            height: 360px;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .driver-auth {
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .driver-auth input {
+            width: 100%;
+            min-height: 42px;
+            margin: 8px 0 16px;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+        }
+
+        .driver-auth label {
+            display: block;
+            color: #475569;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .driver-message {
+            min-height: 24px;
+            margin-top: 12px;
+            color: #475569;
+        }
+
+        #driver-route-map {
+            height: 340px;
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .driver-report-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .driver-report-form label {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            color: #475569;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .driver-report-form select,
+        .driver-report-form textarea,
+        .driver-report-form button {
+            min-height: 42px;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font: inherit;
+        }
+
+        .driver-report-form textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .driver-report-form label:last-of-type,
+        .driver-report-form button,
+        #driver-report-message {
+            grid-column: 1 / -1;
+        }
+
+        #driver-app[hidden] {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .driver-report-form { grid-template-columns: 1fr; }
+            .driver-report-form label,
+            .driver-report-form button,
+            #driver-report-message { grid-column: 1; }
+        }
+    </style>
+</head>
+<body class="portal-layout">
+    <header class="main-navigation">
+        <a href="driver-dashboard.html" class="brand-name">Salamence Tracker | Driver</a>
+        <nav class="top-nav-links">
+            <a href="supplier.html" data-portal-switch>Supplier Portal</a>
+            <button type="button" id="driver-logout" hidden>Sign Out</button>
+        </nav>
+    </header>
+
+    <main class="main-content" style="margin-left:0;width:100%;max-width:1100px;margin-right:auto;margin-left:auto;">
+        <div id="driver-app">
+            <header class="topbar">
+                <div>
+                    <h1>Driver Dashboard</h1>
+                    <p id="driver-account-email"></p>
+                </div>
+            </header>
+
+            <section class="content-card">
+                <div class="section-header">
+                    <div>
+                        <h2>My Assigned Vehicle</h2>
+                        <p id="assigned-vehicle-details">Loading your vehicle...</p>
+                    </div>
+                    <button type="button" id="share-driver-gps">Share Live GPS</button>
+                </div>
+                <div id="driver-map"></div>
+                <p id="driver-status-message" class="driver-message" role="status" aria-live="polite"></p>
+            </section>
+
+            <section class="content-card">
+                <div class="section-header">
+                    <div>
+                        <h2>Optimized Delivery Route</h2>
+                        <p>Plan an optimized road route through your active delivery stops from your latest GPS location. Stop order and travel estimates use road-routing data, not live traffic; conditions may differ.</p>
+                    </div>
+                    <button type="button" id="optimize-route-button" disabled>Optimize Route</button>
+                </div>
+                <div id="driver-route-map"></div>
+                <ol id="driver-route-stops"></ol>
+                <p id="driver-route-message" class="driver-message" role="status" aria-live="polite"></p>
+            </section>
+
+            <section class="content-card">
+                <div class="section-header">
+                    <div>
+                        <h2>My Packages</h2>
+                        <p>Update package status as deliveries progress.</p>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tracking Number</th>
+                                <th>Item</th>
+                                <th>Quantity</th>
+                                <th>Destination</th>
+                                <th>Delivery Schedule</th>
+                                <th>Estimated Delivery</th>
+                                <th>Status</th>
+                                <th>Proof of Delivery</th>
+                                <th>Update</th>
+                            </tr>
+                        </thead>
+                        <tbody id="driver-packages">
+                            <tr><td colspan="9">Loading packages...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="content-card">
+                <h2>Report a Delay or Vehicle Problem</h2>
+                <p>Send an issue report to the administrator. Include the delivery when the report is about a specific package.</p>
+                <form id="driver-report-form" class="driver-report-form">
+                    <label for="driver-report-type">Report type
+                        <select id="driver-report-type" required>
+                            <option value="Delay">Delivery delay</option>
+                            <option value="Vehicle Problem">Vehicle problem</option>
+                        </select>
+                    </label>
+                    <label for="driver-report-vehicle">Vehicle
+                        <select id="driver-report-vehicle" required>
+                            <option value="">Loading vehicles...</option>
+                        </select>
+                    </label>
+                    <label for="driver-report-shipment">Related delivery
+                        <select id="driver-report-shipment">
+                            <option value="">Vehicle / general report</option>
+                        </select>
+                    </label>
+                    <label for="driver-report-details">Details
+                        <textarea id="driver-report-details" maxlength="2000" required placeholder="Describe the delay or vehicle problem"></textarea>
+                    </label>
+                    <button type="submit" id="driver-report-submit">Send Report to Admin</button>
+                <p id="driver-report-message" class="driver-message" role="status" aria-live="polite"></p>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="portal-switch.js"></script>
+    <script src="driver-dashboard.js"></script>
+</body>
+</html>

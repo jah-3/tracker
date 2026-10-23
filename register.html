@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Salamence Tracker</title>
+    <link rel="stylesheet" href="register.css">
+</head>
+<body>
+
+    <main class="login-container">
+
+        <section class="welcome-section">
+            <p class="eyebrow">LOGISTICS & SUPPLY CHAIN</p>
+
+            <h1>
+                Join<br>
+                <span>Salamence Tracker</span>
+            </h1>
+
+            <p class="welcome-text">
+                Create a supplier account to register incoming packages,
+                request products, and follow delivery progress.
+            </p>
+
+            <div class="feature-list">
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    Incoming package tracking
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    Product order requests
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    Vehicle location and ETA
+                </div>
+            </div>
+        </section>
+
+        <section class="login-card">
+
+            <div class="login-heading">
+                <div class="login-icon">👤</div>
+                <h2>Create Account</h2>
+                <p>Register for the Supplier Portal.</p>
+            </div>
+
+            <form id="register-form">
+
+                <div class="form-group">
+                    <label for="new-username">Username</label>
+                    <input
+                        type="text"
+                        id="new-username"
+                        name="username"
+                        placeholder="Create a username"
+                        minlength="3"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="new-email">Email</label>
+                    <input
+                        type="email"
+                        id="new-email"
+                        name="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+                    <small>This page creates a supplier account. Admin access is limited to the approved developer account.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="new-password">Password</label>
+                    <input
+                        type="password"
+                        id="new-password"
+                        name="password"
+                        placeholder="Create a password"
+                        minlength="6"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input
+                        type="password"
+                        id="confirm-password"
+                        name="confirm-password"
+                        placeholder="Enter your password again"
+                        minlength="6"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="login-button">
+                    Create Account →
+                </button>
+
+                <p id="register-message" class="login-message"></p>
+
+            </form>
+
+            <p class="account-switch">
+                Already have an account?
+                <a href="login.html">Sign In</a>
+            </p>
+
+            <div class="login-footer">
+                <p>Supplier accounts can track their packages and submit product requests.</p>
+                <p>© 2026 Salamence Tracker</p>
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        Salamence Tracker | Logistics & Supply Chain System
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="register.js"></script>
+
+</body>
+</html>

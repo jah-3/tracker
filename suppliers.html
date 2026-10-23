@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Salamence Tracker | Supplier Orders</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        if (sessionStorage.getItem("isLoggedIn") !== "true") {
+            window.location.replace("login.html");
+        }
+    </script>
+</head>
+<body>
+    <header class="main-navigation">
+        <a href="index.html" class="brand-name">
+            Salamence Tracker
+        </a>
+
+        <nav class="top-nav-links">
+            <a href="about.html" class="top-nav-link">About</a>
+            <a href="#" class="top-nav-link" id="logout-button">Logout</a>
+        </nav>
+    </header>
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>Salamence Tracker</h2>
+            <p>Supply Chain System</p>
+        </div>
+
+        <nav>
+            <a href="index.html" class="nav-link">
+                <span class="nav-icon">🏠</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="warehouse.html" class="nav-link">
+                <span class="nav-icon">🏭</span>
+                <span>Warehouse</span>
+            </a>
+
+            <a href="inventory.html" class="nav-link">
+                <span class="nav-icon">📦</span>
+                <span>Inventory Stocks</span>
+            </a>
+
+            <a href="fleet.html" class="nav-link">
+                <span class="nav-icon">🚚</span>
+                <span>Fleet Tracking</span>
+            </a>
+
+            <a href="suppliers.html" class="nav-link active">
+                <span class="nav-icon">🛒</span>
+                <span>Supplier Orders</span>
+            </a>
+
+            <a href="ai-assistant.html" class="nav-link">
+                <span class="nav-icon">🤖</span>
+                <span>AI Assistant</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>Salamence Tracker</p>
+            <p>Version 1.0</p>
+        </div>
+
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>Supplier Orders</h1>
+                <p>Manage suppliers and monitor purchase orders.</p>
+            </div>
+
+            <div class="user-info">
+                <span>Administrator</span>
+            </div>
+        </header>
+
+        <section class="dashboard-cards">
+
+            <article class="stat-card">
+                <div class="stat-icon">🛒</div>
+                <div>
+                    <p>Total Suppliers</p>
+                    <h2 id="total-suppliers">0</h2>
+                    <span>Registered suppliers</span>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div>
+                    <p>Total Product Requests</p>
+                    <h2 id="total-orders">0</h2>
+                    <span>Recorded purchase orders</span>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div>
+                    <p>Pending Requests</p>
+                    <h2 id="pending-orders">0</h2>
+                    <span>Requests awaiting review</span>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div>
+                    <p>Approved Requests</p>
+                    <h2 id="completed-orders">0</h2>
+                    <span>Requests approved by admin</span>
+                </div>
+            </article>
+
+        </section>
+        <section class="content-card">
+
+            <div class="section-header">
+                <div>
+                    <h2>Supplier Records</h2>
+                    <p>Registered supplier portal accounts.</p>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Account ID</th>
+                            <th>Supplier Email</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="supplier-table">
+                        <tr>
+                            <td colspan="2">
+                                Loading supplier accounts...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+        <section class="content-card">
+
+            <div class="section-header">
+                <div>
+                    <h2>Supplier Product Requests</h2>
+                    <p>Review product requests submitted in the Supplier Portal.</p>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Request ID</th>
+                            <th>Supplier</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Notes</th>
+                            <th>Request Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="supplier-orders-table">
+                        <tr>
+                            <td colspan="8">
+                                Loading supplier requests...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+        <footer>
+            <p>
+                &copy; 2026 Salamence Tracker |
+                Logistics & Supply Chain System
+            </p>
+        </footer>
+
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="admin-guard.js"></script>
+    <script src="script.js"></script>
+    <script src="suppliers.js"></script>
+
+</body>
+</html>

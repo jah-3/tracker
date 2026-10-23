@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Sign In | Salamence Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .main-navigation { left: 0; }
+        .supplier-auth { max-width: 520px; margin: 24px auto; }
+        .supplier-auth input {
+            width: 100%;
+            min-height: 42px;
+            margin: 8px 0 16px;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+        }
+        .supplier-auth label {
+            display: block;
+            color: #475569;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .supplier-message { min-height: 24px; margin-top: 12px; }
+    </style>
+</head>
+<body class="portal-layout">
+    <header class="main-navigation">
+        <a href="supplier.html" class="brand-name">Salamence Tracker | Supplier</a>
+        <nav class="top-nav-links">
+            <a href="driver.html" data-portal-switch>Driver Sign In</a>
+        </nav>
+    </header>
+    <main class="main-content" style="margin-left:0;width:100%;max-width:1100px;margin-right:auto;">
+        <section class="content-card supplier-auth">
+            <h1>Supplier Portal</h1>
+            <p>Register incoming packages, request products, and track assigned deliveries.</p>
+            <form id="supplier-login-form">
+                <h2>Supplier Sign In</h2>
+                <label for="supplier-login-email">Email</label>
+                <input id="supplier-login-email" type="email" autocomplete="username" required>
+                <label for="supplier-login-password">Password</label>
+                <input id="supplier-login-password" type="password" autocomplete="current-password" required>
+                <button type="submit" id="supplier-login-button">Sign In</button>
+            </form>
+            <hr style="margin:24px 0;border:0;border-top:1px solid #e2e8f0;">
+            <form id="supplier-signup-form">
+                <h2>Create Supplier Account</h2>
+                <label for="supplier-signup-email">Email</label>
+                <input id="supplier-signup-email" type="email" autocomplete="email" required>
+                <label for="supplier-signup-password">Password (at least 6 characters)</label>
+                <input id="supplier-signup-password" type="password" minlength="6" autocomplete="new-password" required>
+                <button type="submit" id="supplier-signup-button">Create Supplier Account</button>
+            </form>
+            <p id="supplier-auth-message" class="supplier-message" role="status" aria-live="polite"></p>
+            <p><a href="driver.html">Driver Portal</a> · <a href="login.html">Admin sign in</a></p>
+        </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="portal-switch.js"></script>
+    <script src="supplier.js"></script>
+</body>
+</html>

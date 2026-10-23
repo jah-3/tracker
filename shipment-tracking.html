@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salamence Tracker | Package Tracking</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        if (sessionStorage.getItem("isLoggedIn") !== "true") {
+            window.location.replace("login.html");
+        }
+    </script>
+</head>
+<body>
+    <header class="main-navigation">
+        <a href="index.html" class="brand-name">Salamence Tracker</a>
+        <nav class="top-nav-links">
+            <a href="about.html" class="top-nav-link">About</a>
+            <a href="#" class="top-nav-link" id="logout-button">Logout</a>
+        </nav>
+    </header>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>Salamence Tracker</h2>
+            <p>Supply Chain System</p>
+        </div>
+        <nav>
+            <a href="index.html" class="nav-link">
+                <span class="nav-icon">🏠</span><span>Dashboard</span>
+            </a>
+            <a href="warehouse.html" class="nav-link">
+                <span class="nav-icon">🏭</span><span>Warehouse</span>
+            </a>
+            <a href="inventory.html" class="nav-link">
+                <span class="nav-icon">📦</span><span>Inventory Stocks</span>
+            </a>
+            <a href="fleet.html" class="nav-link">
+                <span class="nav-icon">🚚</span><span>Fleet Tracking</span>
+            </a>
+            <a href="shipment-tracking.html" class="nav-link active" aria-current="page">
+                <span class="nav-icon">📍</span><span>Package Tracking</span>
+            </a>
+            <a href="suppliers.html" class="nav-link">
+                <span class="nav-icon">🛒</span><span>Supplier Orders</span>
+            </a>
+            <a href="ai-assistant.html" class="nav-link">
+                <span class="nav-icon">🤖</span><span>AI Assistant</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <p>Salamence Tracker</p>
+            <p>Version 1.0</p>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <h1>Package Tracking</h1>
+                <p>Create packages and update their delivery progress.</p>
+            </div>
+            <div class="user-info"><span>Administrator</span></div>
+        </header>
+
+        <section class="dashboard-cards" aria-label="Shipment summary">
+            <article class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div><p>Total Packages</p><h2 id="total-shipments">0</h2><span>All tracked packages</span></div>
+            </article>
+            <article class="stat-card">
+                <div class="stat-icon">🚚</div>
+                <div><p>In Transit</p><h2 id="in-transit-shipments">0</h2><span>Packages moving to destination</span></div>
+            </article>
+            <article class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div><p>Delivered</p><h2 id="delivered-shipments">0</h2><span>Packages delivered</span></div>
+            </article>
+            <article class="stat-card">
+                <div class="stat-icon">⚠️</div>
+                <div><p>Delayed</p><h2 id="delayed-shipments">0</h2><span>Packages needing attention</span></div>
+            </article>
+        </section>
+
+        <section class="content-card">
+            <div class="section-header">
+                <div>
+                    <h2>Add Package</h2>
+                    <p>Enter package details and destination address. The nearest available truck with an assigned driver and a GPS location is selected automatically. You can still choose a truck manually.</p>
+                </div>
+            </div>
+            <form id="shipment-form" class="shipment-form">
+                <label for="tracking-number">
+                    Tracking Number
+                    <input id="tracking-number" name="tracking_number" maxlength="80" required>
+                </label>
+                <label for="package-name">
+                    Package Name
+                    <input id="package-name" name="package_name" maxlength="200" required>
+                </label>
+                <label for="destination">
+                    Destination
+                    <input id="destination" name="destination" maxlength="200" required>
+                </label>
+                <label for="shipment-quantity">
+                    Quantity
+                    <input id="shipment-quantity" name="quantity" type="number" min="1" step="1" value="1" required>
+                </label>
+                <label for="scheduled-delivery">
+                    Scheduled Delivery
+                    <input id="scheduled-delivery" name="scheduled_delivery_at" type="datetime-local">
+                </label>
+                <label for="shipment-vehicle">
+                    Assign to vehicle
+                    <select id="shipment-vehicle" name="vehicle_id">
+                        <option value="">No vehicle assigned</option>
+                    </select>
+                </label>
+                <label for="shipment-supplier">
+                    Assign to supplier
+                    <select id="shipment-supplier" name="supplier_id">
+                        <option value="">No supplier assigned</option>
+                    </select>
+                </label>
+                <label for="shipment-status">
+                    Status
+                    <select id="shipment-status" name="status" required>
+                        <option>Preparing</option>
+                        <option>In Transit</option>
+                        <option>Out for Delivery</option>
+                        <option>Delivered</option>
+                        <option>Delayed</option>
+                    </select>
+                </label>
+                <button type="submit" id="shipment-submit">Add Package</button>
+                <button type="button" id="shipment-cancel-edit" hidden>Cancel Edit</button>
+            </form>
+            <p id="shipment-message" class="shipment-status" role="status" aria-live="polite"></p>
+            <p class="shipment-status">Address lookup and driving-time estimates use OpenStreetMap services. Estimates are approximate and require internet access.</p>
+        </section>
+
+        <section class="content-card">
+            <div class="section-header">
+                <div>
+                    <h2>Tracked Packages</h2>
+                    <p>Driver delivery-status updates and assigned trucks sync automatically. Search by tracking number, package name, or destination.</p>
+                </div>
+            </div>
+            <label class="sr-only" for="shipment-search">Search tracked packages</label>
+            <input
+                id="shipment-search"
+                class="shipment-search"
+                type="search"
+                placeholder="Search packages..."
+                autocomplete="off">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tracking Number</th>
+                            <th>Package</th>
+                            <th>Destination</th>
+                            <th>Quantity</th>
+                            <th>Scheduled Delivery</th>
+                            <th>Vehicle</th>
+                            <th>Supplier</th>
+                            <th>Status</th>
+                            <th>Estimated Delivery</th>
+                            <th>Proof of Delivery</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="shipment-table">
+                        <tr><td colspan="12">Loading packages...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Salamence Tracker | Logistics &amp; Supply Chain System</p>
+        </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="admin-guard.js"></script>
+    <script src="shipment-tracking.js"></script>
+</body>
+</html>
